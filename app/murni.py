@@ -13,14 +13,21 @@ import os
 
 # --- Fungsi untuk Memuat dan Melatih Model ---
 @st.cache_data
-def load_data_and_get_preprocessors(url):
-    df_orig = pd.read_csv(url, delimiter=',')
-    df = df_orig.copy()
+def load_data_and_get_preprocessors(file_path):
+    try:
+        df_orig = pd.read_csv(file_path, delimiter=',')
+    except FileNotFoundError:
+        st.error(f"Error: File dataset tidak ditemukan di path: {file_path}")
+        st.error(f"Pastikan file dataset Anda berada di direktori 'uas' dan skrip Streamlit Anda berada di 'uas/app/'.")
+        st.stop() 
+    except Exception as e:
+        st.error(f"Error saat membaca file CSV: {e}")
+        st.stop()
 
+    df = df_orig.copy()
     label_encoders = {}
-    # Identifikasi kolom mana yang 'object' dari dataframe asli sebelum diubah
     categorical_cols = df.select_dtypes(include='object').columns.tolist()
-    if 'Recurred' in categorical_cols and 'Recurred' not in label_encoders : 
+    if 'Recurred' in df.columns and df['Recurred'].dtype == 'object' and 'Recurred' not in categorical_cols:
          categorical_cols.append('Recurred')
 
 
@@ -28,16 +35,15 @@ def load_data_and_get_preprocessors(url):
         if df[col].dtype == 'object':
             le = LabelEncoder()
             df[col] = le.fit_transform(df[col])
-            label_encoders[col] = le 
+            label_encoders[col] = le
 
     if 'Recurred' in label_encoders:
         recurred_classes = label_encoders['Recurred'].classes_
     else:
-        recurred_classes = None 
+        recurred_classes = None
 
     X = df.drop(columns=['Recurred'])
     y = df['Recurred']
-
     feature_names = X.columns.tolist()
 
     scaler = StandardScaler()
@@ -70,6 +76,7 @@ def train_models(X_train, y_train):
 
 # --- Load Data dan Latih Model (Hanya sekali atau saat cache invalid) ---
 url = "https://drive.google.com/uc?export=download&id=11lMuTGycjsA7i4soyqBjYTC-64pUdyxV"
+dataset_path = "../Thyroid_Diff.csv"
 df_original, X_scaled_df, y, label_encoders, scaler, feature_names, recurred_classes, categorical_cols_original = load_data_and_get_preprocessors(url)
 
 # Split data (menggunakan data yang sudah di-scale untuk X)
