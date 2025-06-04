@@ -18,7 +18,6 @@ def load_data_and_get_preprocessors(file_path):
         df_orig = pd.read_csv(file_path, delimiter=',')
     except FileNotFoundError:
         st.error(f"Error: File dataset tidak ditemukan di path: {file_path}")
-        st.error(f"Pastikan file dataset Anda berada di direktori 'uas' dan skrip Streamlit Anda berada di 'uas/app/'.")
         st.stop() 
     except Exception as e:
         st.error(f"Error saat membaca file CSV: {e}")
@@ -75,7 +74,6 @@ def train_models(X_train, y_train):
     return models
 
 # --- Load Data dan Latih Model (Hanya sekali atau saat cache invalid) ---
-url = "https://drive.google.com/uc?export=download&id=11lMuTGycjsA7i4soyqBjYTC-64pUdyxV"
 dataset_path = "../Thyroid_Diff.csv"
 df_original, X_scaled_df, y, label_encoders, scaler, feature_names, recurred_classes, categorical_cols_original = load_data_and_get_preprocessors(url)
 
