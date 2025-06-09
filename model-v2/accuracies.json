@@ -1,0 +1,17 @@
+{
+    "murni": {
+        "Random Forest": 0.7792207792207793,
+        "Logistic Regression": 0.8701298701298701,
+        "K-NN (K-Nearest Neighbors)": 0.7142857142857143
+    },
+    "oversampling": {
+        "Random Forest": 1.0,
+        "Logistic Regression": 0.922077922077922,
+        "K-NN (K-Nearest Neighbors)": 0.922077922077922
+    },
+    "undersampling": {
+        "Random Forest": 0.974025974025974,
+        "Logistic Regression": 0.8831168831168831,
+        "K-NN (K-Nearest Neighbors)": 0.935064935064935
+    }
+}
