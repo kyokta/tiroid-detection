@@ -5,10 +5,9 @@ import os
 import json
 
 # --- Konfigurasi Path (Menggunakan String Relatif) ---
-# Path ini mengasumsikan Anda menjalankan 'streamlit run' dari folder utama proyek ('uas')
-MODELS_BASE_DIR = "model-v2"  # Nama folder models Anda
-DATASET_PATH = "Thyroid_Diff.csv" # Nama file dataset Anda
-ACCURACY_PATH = os.path.join(MODELS_BASE_DIR, "accuracies.json") # Path ke file akurasi
+MODELS_BASE_DIR = "model-v2"
+DATASET_PATH = "Thyroid_Diff.csv"
+ACCURACY_PATH = os.path.join(MODELS_BASE_DIR, "accuracies.json")
 
 # --- Pemetaan untuk UI ---
 DATASET_MAPPING = {
@@ -22,10 +21,10 @@ MODEL_MAPPING = {
     "K-NN (K-Nearest Neighbors)": "model_knn"
 }
 
-# --- Fungsi-fungsi untuk Memuat Aset (dengan Caching) ---
+# --- Fungsi-fungsi untuk Memuat Aset ---
 @st.cache_data
 def load_raw_data(file_path):
-    """Memuat dataframe mentah untuk UI."""
+    # Memuat dataframe mentah untuk UI
     try:
         return pd.read_csv(file_path, delimiter=',')
     except FileNotFoundError:
@@ -35,7 +34,7 @@ def load_raw_data(file_path):
 
 @st.cache_resource
 def load_preprocessors(base_dir):
-    """Memuat scaler dan label encoders."""
+    # Memuat scaler dan label encoders
     try:
         scaler = joblib.load(os.path.join(base_dir, "scaler.joblib"))
         label_encoders = joblib.load(os.path.join(base_dir, "label_encoders.joblib"))
@@ -47,7 +46,7 @@ def load_preprocessors(base_dir):
 
 @st.cache_data
 def load_accuracies(file_path):
-    """Memuat file akurasi."""
+    # Memuat file akurasi.
     try:
         with open(file_path, 'r') as f:
             return json.load(f)
@@ -57,7 +56,7 @@ def load_accuracies(file_path):
 
 @st.cache_resource
 def load_model(dataset_folder, model_file):
-    """Memuat model machine learning."""
+    # Memuat model machine learning.
     model_path = os.path.join(MODELS_BASE_DIR, dataset_folder, f"{model_file}.joblib")
     try:
         return joblib.load(model_path)
@@ -92,7 +91,7 @@ if accuracies:
         accuracy_value = accuracies[dataset_key][selected_model_name_ui]
         st.sidebar.metric(
             label="Akurasi pada Test Set",
-            value=f"{accuracy_value:.2%}" # Tampilkan dalam format persentase
+            value=f"{accuracy_value:.2%}"
         )
     except KeyError:
         st.sidebar.warning("Data akurasi untuk model ini tidak ditemukan.")
